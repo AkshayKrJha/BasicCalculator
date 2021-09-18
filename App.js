@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 const add = (output, input) => {
-  return output + input;
+  return +output + +input;
 }
 
 const subtract = (output, input) => {
@@ -32,8 +32,8 @@ const divide = (output, input) => {
   return output / input;
 }
 
-const result = (output, operand, input) => {
-  switch (operand) {
+const result = (output, operator, input) => {
+  switch (operator) {
     case '*':
       return multiply(output, input);
       break;
@@ -49,14 +49,14 @@ const result = (output, operand, input) => {
   }
 }
 
-const CalculativeButton = (property) => {
-  return (
-    <View style={{ flex: 1 }}>
-      <TouchableOpacity>
-        <Text>{property.value}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+const buttonStyle = () => {
+  return {
+    alignItems: 'center',
+    backgroundColor: '#eeeeee',
+    padding: 20,
+    borderColor: '#111111',
+    borderWidth: 4
+  }
 }
 
 const Calculator = () => {
@@ -64,44 +64,88 @@ const Calculator = () => {
   //find current character typed
   const operand = ['*', '/', '+', '-'];
   const [currentResult, SetCurrentResult] = useState(0);
-  const [currentOperand, SetCurrentOperand] = useState('+');
+  const [currentOperator, SetCurrentOperator] = useState('+');
   const [currentInput, SetCurrentInput] = useState(0);
+  //const [currentText, SetCurrentText] = useState(0);
+
+  const onNumber = (value) => {
+    SetCurrentInput(`${currentInput}${value}`);
+  }
+
+  const onOperator = (operator) => {
+    SetCurrentResult(result(currentResult, currentOperator, currentInput));
+    SetCurrentOperator(operator);
+    SetCurrentInput(0);
+  }
+
+  const onEqualTo = () => {
+    SetCurrentResult(result(currentResult, currentOperator, currentInput));
+    SetCurrentOperator('+');
+    SetCurrentInput(0);
+  }
+
+  const onPress = (value) => {
+    // SetCurrentInput(`${currentInput}${value}`)
+    (/[0-9]/).test(value) ? 
+    onNumber(value) :
+    (/[+*/-]/).test(value) ?
+    onOperator(value):
+    onEqualTo();
+  }
+
+  const CalculativeButton = (property) => {
+    return (
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={buttonStyle()}
+          onPress={() => onPress(property.value)}>
+          <Text
+            style={{ fontSize: 20 }}>
+            {property.value}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  var buttons = ['0', '1', '2', '3', '4',
+    '5', '6', '7', '8', '9',
+    '+', '-', '*', '/', '='];
+
+  const rowEntry = (m, n) => {
+    var row = [];
+    for (let i = m; i < n; ++i) {
+      row.push(<CalculativeButton value={buttons[i]} />)
+    }
+    return row;
+  }
+
   return (
     <View>
       <Text style={textStyle()}>
-        {currentInput}
+        {currentResult}
       </Text>
       <View style={{ flexDirection: 'row' }}>
-        <CalculativeButton value='0' />
-        <CalculativeButton value='1' />
-        <CalculativeButton value='2' />
-        <CalculativeButton value='3' />
-        <CalculativeButton value='4' />
+        {rowEntry(0, 5)}
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <CalculativeButton value='5' />
-        <CalculativeButton value='6' />
-        <CalculativeButton value='7' />
-        <CalculativeButton value='8' />
-        <CalculativeButton value='9' />
+        {rowEntry(5, 10)}
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <CalculativeButton value='+' />
-        <CalculativeButton value='-' />
-        <CalculativeButton value='*' />
-        <CalculativeButton value='/' />
-        <CalculativeButton value='=' />
+        {rowEntry(10, 15)}
       </View>
     </View>);
 }
 
 const textStyle = () => {
   return {
+    textAlign: 'right',
+    fontSize: 40,
     height: '25%',
     width: '100%',
     backgroundColor: '#dddddd',
     borderBottomColor: '#222222',
-    borderBottomWidth: 3
+    borderBottomWidth: 3,
   }
 }
 
