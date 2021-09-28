@@ -115,6 +115,8 @@ const Calculator = () => {
     '5', '6', '7', '8', '9',
     '+', '-', '*', '/', '='];
 
+    //Set of buttons in a row
+
   const rowEntry = (m, n) => {
     var row = [];
     for (let i = m; i < n; ++i) {
