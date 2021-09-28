@@ -70,6 +70,7 @@ const Calculator = () => {
 
   const onNumber = (value) => {
     SetCurrentInput(`${currentInput}${value}`);
+    console.log(`${value} pressed`);
   }
 
   const onOperator = (operator) => {
@@ -107,6 +108,8 @@ const Calculator = () => {
       </View>
     );
   }
+
+  //Set of buttons
 
   const buttons = ['0', '1', '2', '3', '4',
     '5', '6', '7', '8', '9',
